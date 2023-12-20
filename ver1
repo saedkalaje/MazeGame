@@ -1,0 +1,52 @@
+static char[][] labirent;
+    static int playerRow;
+    static int playerCol;
+    static int moveCount;
+    static int remainingMoves;
+    static final int BONUS_CHANGE_INTERVAL = 5;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Welcome to the Maze Game!");
+        initializeMaze();
+        findStartingAndEndingPoints();
+        placeInitialBonuses();
+        placeInitialMines();
+        printMaze();
+
+        while (true) {
+            System.out.println("Remaining Moves: " + remainingMoves);
+            System.out.println("Enter your move (W/A/S/D, T for Teleport, R for Wall Removal, H for Move Reduction, F for Mine Solving, E to exit): ");
+            char move = Character.toLowerCase(scanner.next().charAt(0));
+
+            if (move == 'e') {
+                System.out.println("Exiting the program. Goodbye!");
+                break;
+            }
+
+            if (isValidMove(move)) {
+                makeMove(move);
+
+                if (labirent[playerRow][playerCol] == 'E') {
+                    System.out.println("Congratulations! You reached the exit. Game Over!");
+                    System.out.println("Total Moves Taken: " + moveCount);
+                    break;
+                }
+
+                if (moveCount % BONUS_CHANGE_INTERVAL == 0) {
+                    clearPreviousBonuses();
+                    changeBonusPositions();
+                    changeMinePositions();
+                    System.out.println("Bonus and mine positions have changed!");
+                }
+
+                printMaze();
+                System.out.println("Press 'E' to exit");
+            } else {
+                System.out.println("Invalid move. Try again.");
+            }
+        }
+
+        scanner.close();
+    }
